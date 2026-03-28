@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tulunadu — Land of Legends</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;900&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #C9993A;
+      --deep-gold: #8B6914;
+      --rust: #8B2500;
+      --cream: #F5EDD8;
+      --parchment: #EDE0C4;
+      --dark: #1A0F05;
+      --mid: #2E1B0A;
+      --text: #3B2008;
+      --accent: #D4572A;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--dark);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      overflow-x: hidden;
+    }
+
+    /* ──── NOISE TEXTURE OVERLAY ──── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* ──── NAV ──── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 4rem;
+      background: linear-gradient(to bottom, rgba(26,15,5,0.95), transparent);
+      backdrop-filter: blur(2px);
+    }
+
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      color: var(--cream);
+      text-decoration: none;
+      opacity: 0.75;
+      transition: opacity 0.3s, color 0.3s;
+      text-transform: uppercase;
+    }
+
+    .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+    /* ──── HERO ──── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      padding: 2rem;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,153,58,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 20% 80%, rgba(139,37,0,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 80% 10%, rgba(139,37,0,0.12) 0%, transparent 60%),
+        var(--dark);
+    }
+
+    /* Decorative mandala ring */
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,153,58,0.12);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: rotateSlow 60s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes rotateSlow { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.45em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(3.5rem, 9vw, 7.5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: 0.04em;
+      background: linear-gradient(135deg, var(--gold) 0%, #F0C96B 40%, var(--gold) 70%, var(--deep-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.3rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.6s forwards;
+    }
+
+    .hero-subtitle {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      color: var(--parchment);
+      opacity: 0;
+      animation: fadeUp 1s 0.9s forwards;
+      margin-bottom: 2.5rem;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-desc {
+      max-width: 580px;
+      font-size: 1.15rem;
+      line-height: 1.85;
+      color: rgba(245,237,216,0.7);
+      opacity: 0;
+      animation: fadeUp 1s 1.2s forwards;
+      margin-bottom: 3rem;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--dark);
+      background: linear-gradient(135deg, var(--gold), #E8B84B);
+      padding: 0.9rem 2.5rem;
+      text-decoration: none;
+      transition: transform 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      animation: fadeUp 1s 1.4s forwards;
+    }
+
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(201,153,58,0.4);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 1s 2s forwards;
+    }
+
+    .scroll-hint span {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      opacity: 0.6;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    /* ──── DIVIDER ──── */
+    .ornament-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 3rem 0 2rem;
+    }
+
+    .ornament-divider::before,
+    .ornament-divider::after {
+      content: '';
+      flex: 1;
+      max-width: 200px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold));
+    }
+
+    .ornament-divider::after {
+      background: linear-gradient(to left, transparent, var(--gold));
+    }
+
+    .ornament-diamond {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      transform: rotate(45deg);
+    }
+
+    /* ──── SECTION COMMON ──── */
+    section { padding: 6rem 2rem; position: relative; }
+
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .section-heading {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 600;
+      text-align: center;
+      color: var(--cream);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .section-intro {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 4rem;
+      font-size: 1.1rem;
+      line-height: 1.85;
+      color: rgba(245,237,216,0.65);
+      font-style: italic;
+    }
+
+    /* ──── TIMELINE ──── */
+    .timeline-section {
+      background: linear-gradient(to bottom, var(--dark), var(--mid), var(--dark));
+    }
+
+    .timeline {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--gold) 10%, var(--gold) 90%, transparent);
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      gap: 0;
+      margin-bottom: 4rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+
+    .timeline-item.visible { opacity: 1; transform: translateY(0); }
+
+    .timeline-item:nth-child(odd) .timeline-content { grid-column: 1; text-align: right; padding-right: 3rem; }
+    .timeline-item:nth-child(odd) .timeline-empty { grid-column: 3; }
+    .timeline-item:nth-child(even) .timeline-content { grid-column: 3; text-align: left; padding-left: 3rem; }
+    .timeline-item:nth-child(even) .timeline-empty { grid-column: 1; }
+
+    .timeline-node {
+      grid-column: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .timeline-dot {
+      width: 14px; height: 14px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+      box-shadow: 0 0 20px rgba(201,153,58,0.5);
+    }
+
+    .timeline-year {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-event-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: var(--cream);
+      margin-bottom: 0.6rem;
+    }
+
+    .timeline-event-desc {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: rgba(245,237,216,0.6);
+    }
+
+    /* ──── CULTURE CARDS ──── */
+    .culture-section {
+      background: var(--dark);
+    }
+
+    .culture-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .culture-card {
+      position: relative;
+      padding: 3rem 2.5rem;
+      background: var(--mid);
+      overflow: hidden;
+      cursor: default;
+      transition: background 0.4s;
+    }
+
+    .culture-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 0;
+      background: var(--gold);
+      transition: height 0.4s ease;
+    }
+
+    .culture-card:hover { background: #2E1B0A; }
+    .culture-card:hover::before { height: 100%; }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+
+    .card-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+
+    .card-text {
+      font-size: 0.98rem;
+      line-height: 1.8;
+      color: rgba(245,237,216,0.65);
+    }
+
+    /* ──── QUOTE BAND ──── */
+    .quote-band {
+      padding: 6rem 2rem;
+      background:
+        linear-gradient(135deg, rgba(139,37,0,0.3) 0%, transparent 50%),
+        linear-gradient(-45deg, rgba(201,153,58,0.15) 0%, transparent 50%),
+        var(--mid);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quote-band::before {
+      content: '\201C';
+      position: absolute;
+      top: -2rem; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Cinzel', serif;
+      font-size: 18rem;
+      color: rgba(201,153,58,0.06);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .quote-text {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      line-height: 1.5;
+      color: var(--cream);
+      max-width: 800px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .quote-source {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
+    /* ──── TEMPLES ──── */
+    .temples-section { background: var(--dark); }
+
+    .temples-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .temple-card {
+      border: 1px solid rgba(201,153,58,0.15);
+      padding: 2.5rem 2rem;
+      position: relative;
+      transition: border-color 0.3s, transform 0.3s;
+      background: rgba(201,153,58,0.03);
+    }
+
+    .temple-card:hover {
+      border-color: rgba(201,153,58,0.5);
+      transform: translateY(-4px);
+    }
+
+    .temple-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 0.4rem;
+    }
+
+    .temple-location {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      font-family: 'Cinzel', serif;
+    }
+
+    .temple-desc {
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: rgba(245,237,216,0.55);
+    }
+
+    /* ──── FOOTER ──── */
+    footer {
+      padding: 4rem 2rem 3rem;
+      border-top: 1px solid rgba(201,153,58,0.15);
+      text-align: center;
+      background: var(--dark);
+    }
+
+    .footer-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold), #F0C96B);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      letter-spacing: 0.1em;
+      display: block;
+    }
+
+    .footer-tagline {
+      font-style: italic;
+      color: rgba(245,237,216,0.4);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      list-style: none;
+      margin-bottom: 2.5rem;
+    }
+
+    .footer-links a {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+      text-transform: uppercase;
+    }
+
+    .footer-links a:hover { opacity: 1; }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: rgba(245,237,216,0.25);
+      letter-spacing: 0.05em;
+    }
+
+    /* ──── MOBILE ──── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+
+      .timeline::before { left: 20px; }
+      .timeline-item { grid-template-columns: 40px 1fr; }
+      .timeline-item:nth-child(odd) .timeline-content,
+      .timeline-item:nth-child(even) .timeline-content { grid-column: 2; text-align: left; padding: 0 0 0 1.5rem; }
+      .timeline-item:nth-child(odd) .timeline-empty,
+      .timeline-item:nth-child(even) .timeline-empty { display: none; }
+      .timeline-node { grid-column: 1; justify-content: flex-start; padding-left: 13px; }
+
+      .temples-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">TULUNADU</a>
+    <ul class="nav-links">
+      <li><a href="#history">History</a></li>
+      <li><a href="#culture">Culture</a></li>
+      <li><a href="#temples">Temples</a></li>
+      <li><a href="#language">Language</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-eyebrow">Coastal Karnataka · Western Ghats</p>
+    <h1 class="hero-title">TULUNADU</h1>
+    <p class="hero-subtitle">Land of the Tulu People</p>
+    <p class="hero-desc">
+      A land where ancient spirits dance in the light of torches, where the sea meets the Western Ghats,
+      and where a civilization older than memory has kept its language, its art, and its soul alive through millennia.
+    </p>
+    <a href="#history" class="hero-cta">Explore the Heritage ›</a>
+
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="timeline-section" id="history">
+    <span class="section-label">Through the Ages</span>
+    <h2 class="section-heading">History of Tulunadu</h2>
+    <p class="section-intro">From the ancient Alupa kingdom to the vibrant present — a story woven across two thousand years.</p>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <p class="timeline-year">2nd Century CE</p>
+          <h3 class="timeline-event-title">Alupa Dynasty</h3>
+          <p class="timeline-event-desc">The Alupas, one of the oldest ruling families of coastal Karnataka, establish dominion over the Tulunadu region, patronising Jainism and Hindu traditions simultaneously.</p>
+        </div>
+        <div class="timeline-node"><div class="timeline-dot"></div></div>
+        <div class="timeline-empty"></div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-empty"></div>
+        <div class="timeline-node"><div class="timeline-dot"></div></div>
+        <div class="timeline-content">
+          <p class="timeline-year">8th – 10th Century</p>
+          <h3 class="timeline-event-title">Rise of Yakshagana</h3>
+          <p class="timeline-event-desc">The seeds of Yakshagana — the grand theatrical tradition of Tulunadu — are sown during this period, blending devotion, drama, dance, and music into an art form unlike any other.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <p class="timeline-year">14th – 16th Century</p>
+          <h3 class="timeline-event-title">Vijayanagara Influence</h3>
+          <p class="timeline-event-desc">Under the Vijayanagara Empire, Tulunadu flourishes as a cultural and economic hub. Major temple complexes are expanded, and the region becomes renowned for its maritime trade.</p>
+        </div>
+        <div class="timeline-node"><div class="timeline-dot"></div></div>
+        <div class="timeline-empty"></div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-empty"></div>
+        <div class="timeline-node"><div class="timeline-dot"></div></div>
+        <div class="timeline-content">
+          <p class="timeline-year">15th Century</p>
+          <h3 class="timeline-event-title">Tulu Script & Literature</h3>
+          <p class="timeline-event-desc">The ancient Tigalari (Tulu) script, closely related to Grantha, is used to write sacred texts and poetic works, preserving the oral traditions of Tulu literature in written form.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <p class="timeline-year">17th – 18th Century</p>
+          <h3 class="timeline-event-title">Keladi Nayaka & Kodagu Rule</h3>
+          <p class="timeline-event-desc">The Keladi Nayakas take control of Tulunadu, followed by Hyder Ali and Tipu Sultan. Despite political changes, the cultural traditions of Bhuta Kola and Yakshagana continue unbroken.</p>
+        </div>
+        <div class="timeline-node"><div class="timeline-dot"></div></div>
+        <div class="timeline-empty"></div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-empty"></div>
+        <div class="timeline-node"><div class="timeline-dot"></div></div>
+        <div class="timeline-content">
+          <p class="timeline-year">Present Day</p>
+          <h3 class="timeline-event-title">Living Heritage</h3>
+          <p class="timeline-event-desc">Tulunadu's traditions remain vibrantly alive. Bhuta Kola ceremonies are performed in hundreds of villages, Yakshagana troupes travel across the world, and Tulu cinema brings its culture to new generations.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CULTURE CARDS -->
+  <section class="culture-section" id="culture">
+    <span class="section-label">Living Traditions</span>
+    <h2 class="section-heading">Culture & Heritage</h2>
+    <p class="section-intro">Tulunadu is not merely a region — it is a living museum of traditions that have shaped coastal Karnataka for centuries.</p>
+
+    <div class="culture-grid">
+      <div class="culture-card">
+        <span class="card-icon">🔥</span>
+        <h3 class="card-title">Bhuta Kola</h3>
+        <p class="card-text">A ritualistic spirit worship unique to Tulunadu, where performers channel ancestral spirits (Bhutas) through elaborate costumes, dance, and oral epics. A UNESCO-recognised tradition of immeasurable cultural depth.</p>
+      </div>
+      <div class="culture-card">
+        <span class="card-icon">🎭</span>
+        <h3 class="card-title">Yakshagana</h3>
+        <p class="card-text">A spectacular theatrical form combining dance, music, dialogue, and elaborate costumes. Performed all night under the open sky, Yakshagana brings epics like the Mahabharata and Ramayana to life with unmatched energy.</p>
+      </div>
+      <div class="culture-card">
+        <span class="card-icon">🌊</span>
+        <h3 class="card-title">Kambala</h3>
+        <p class="card-text">The ancient buffalo race of Tulunadu — a harvest festival tradition where buffaloes and their handlers sprint through flooded paddy fields, celebrating the bond between people, animals, and the land.</p>
+      </div>
+      <div class="culture-card">
+        <span class="card-icon">🍛</span>
+        <h3 class="card-title">Tulu Cuisine</h3>
+        <p class="card-text">From Kori Rotti (chicken curry with crispy rice wafers) to Patrode (colocasia leaf rolls) and Neer Dosa, Tulu cuisine is a celebration of coastal flavours — coconut-rich, aromatic, and deeply satisfying.</p>
+      </div>
+      <div class="culture-card">
+        <span class="card-icon">✍️</span>
+        <h3 class="card-title">Tulu Language</h3>
+        <p class="card-text">One of the ancient Dravidian languages with its own literary tradition, Tulu is spoken by nearly 2 million people. Rich in proverbs, folk songs (Paddanas), and oral epics, it carries the soul of the region.</p>
+      </div>
+      <div class="culture-card">
+        <span class="card-icon">🤼</span>
+        <h3 class="card-title">Aati Kalenja</h3>
+        <p class="card-text">A monsoon folk tradition where performers dressed as Kalenja visit households, singing blessings and warding off evil. An intimate, community-level expression of Tulu folk belief and seasonal celebration.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE BAND -->
+  <div class="quote-band">
+    <p class="quote-text">"Where the sacred and the everyday are not two different worlds, but one continuous song passed down through the generations."</p>
+    <p class="quote-source">— On the spirit of Tulunadu</p>
+  </div>
+
+  <!-- TEMPLES -->
+  <section class="temples-section" id="temples">
+    <span class="section-label">Sacred Places</span>
+    <h2 class="section-heading">Sacred Temples</h2>
+    <p class="section-intro">Tulunadu's temples are not merely places of worship — they are living institutions that anchor communities across centuries.</p>
+
+    <div class="temples-grid">
+      <div class="temple-card">
+        <p class="temple-name">Shri Dharmasthala Temple</p>
+        <p class="temple-location">Dharmasthala</p>
+        <p class="temple-desc">A unique temple managed by a Jain family for a Hindu deity, Dharmasthala embodies Tulunadu's centuries-old tradition of interfaith harmony and charitable service.</p>
+      </div>
+      <div class="temple-card">
+        <p class="temple-name">Shri Krishna Matha</p>
+        <p class="temple-location">Udupi</p>
+        <p class="temple-desc">Founded by philosopher-saint Madhvacharya in the 13th century, the Udupi Krishna temple is one of India's most revered Vaishnava shrines and birthplace of Udupi cuisine.</p>
+      </div>
+      <div class="temple-card">
+        <p class="temple-name">Kukke Subramanya Temple</p>
+        <p class="temple-location">Subramanya</p>
+        <p class="temple-desc">Nestled at the foot of the Western Ghats, this ancient temple dedicated to Lord Subramanya draws pilgrims for the Sarpa Samskara rituals, believed to cure serpent-related afflictions.</p>
+      </div>
+      <div class="temple-card">
+        <p class="temple-name">Kateel Durgaparameshwari Temple</p>
+        <p class="temple-location">Kateel, near Mangalore</p>
+        <p class="temple-desc">Set on an island in the Nandini river, this goddess temple is one of Tulunadu's most beloved, drawing devotees in enormous numbers for its annual Brahmakalashotsava festival.</p>
+      </div>
+      <div class="temple-card">
+        <p class="temple-name">Moodabidri Jain Temples</p>
+        <p class="temple-location">Moodabidri</p>
+        <p class="temple-desc">Known as the "Jain Kashi of Karnataka," Moodabidri has 18 Jain basadis (temples), with the 1000-pillar Thousand Pillars Basadi being a masterpiece of medieval Jain architecture.</p>
+      </div>
+      <div class="temple-card">
+        <p class="temple-name">Kollur Mookambika Temple</p>
+        <p class="temple-location">Kollur</p>
+        <p class="temple-desc">High in the Kodachadri hills, the Mookambika temple is one of the six sacred abodes of Adi Shakti, drawing pilgrims on a journey through some of Karnataka's most spectacular natural scenery.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ornament-divider"><div class="ornament-diamond"></div></div>
+    <span class="footer-logo">TULUNADU</span>
+    <p class="footer-tagline">Preserving the living heritage of coastal Karnataka</p>
+    <ul class="footer-links">
+      <li><a href="#history">History</a></li>
+      <li><a href="#culture">Culture</a></li>
+      <li><a href="#temples">Temples</a></li>
+      <li><a href="#language">Language</a></li>
+    </ul>
+    <p class="footer-copy">Built with love for Tulunadu · Hosted on GitHub Pages</p>
+  </footer>
+
+  <script>
+    // Scroll-triggered timeline animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.timeline-item').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
